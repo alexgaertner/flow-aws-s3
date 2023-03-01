@@ -157,7 +157,9 @@ class S3Target implements TargetInterface
                     $this->corsAllowOrigin = (string)$value;
                 break;
                 case 'baseUri':
-                    $this->baseUri = (string)$value;
+                    $is_ssl = in_array($_SERVER['HTTPS'] ?? '', ['on', 1]) || ($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') == 'https';
+                    $protocol = $is_ssl ? 'https://' : 'http://';
+                    $this->baseUri = (string)str_replace("{protocol}", $protocol, $value);
                 break;
                 case 'unpublishResources':
                     $this->unpublishResources = (bool)$value;
